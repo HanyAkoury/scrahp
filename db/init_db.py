@@ -2,11 +2,11 @@ import os
 import sqlite3
 
 def is_database_initialized():
-    return os.path.exists('db/initialized.flag')
+    return os.path.exists('initialized.flag')
 
 def initialize_database():
     # Connect to the SQLite database
-    conn = sqlite3.connect('db/scrahp.db')
+    conn = sqlite3.connect('scrahp.db')
     c = conn.cursor()
 
     # Create tables and perform other initialization steps
@@ -23,7 +23,7 @@ def initialize_database():
     conn.close()
 
     # Create a flag file to indicate that the initialization is complete
-    with open('db/initialized.flag', 'w') as flag_file:
+    with open('initialized.flag', 'w') as flag_file:
         flag_file.write('Initialization complete')
 
 if not is_database_initialized():

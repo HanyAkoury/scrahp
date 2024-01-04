@@ -28,7 +28,14 @@ class ArticlesSpider(scrapy.Spider):
 
     def save_page_offline(self, response)-> None: 
         page = response.url.split("/")[-2]
-        filename = f"./pages/Articles2-{page}.html"
-        Path(filename).write_bytes(response.body)
+        directory = "./pages/"
+        filename = f"{directory}Articles2-{page}.html"
+
+        # Create the directory if it doesn't exist
+        Path(directory).mkdir(parents=True, exist_ok=True)
+
+        with open(filename, 'wb') as file:
+            file.write(response.body)
+
         self.local_urls.append(filename)
         self.log(f"Saved file {filename}")

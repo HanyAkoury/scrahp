@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  scrahp:
+    build:
+      context: .
+      dockerfile: ./scrahp/scrahp.Dockerfile
+    depends_on:
+      - database
+    networks:
+      - my_network
+    volumes:
+    - ./db:/app/db
+
+  api:
+    build:
+      context: .
+      dockerfile: ./api/api.Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - my_network
+    volumes:
+      - ./db:/api/db
+
+  database:
+    build:
+      context: .
+      dockerfile: ./db/db.Dockerfile
+    networks:
+      - my_network
+    volumes:
+      - ./db:/db/
+
+networks:
+  my_network:

@@ -1,9 +1,7 @@
 import sqlite3
-import pdb
 
 # Connect to the SQLite database
-pdb.set_trace()
-conn = sqlite3.connect('db/scrahp.db')
+conn = sqlite3.connect('scrahp.db')
 c = conn.cursor()
 
 # Example 1: Select all columns from the articles table
