@@ -19,3 +19,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy the rest of the application code
 COPY ./scrahp /app/scrahp
+COPY ./scrapy.cfg /app/
+
+ENTRYPOINT ["./scrahp/crawl.sh"]

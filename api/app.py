@@ -5,9 +5,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////db/scrahp.db'
 db = SQLAlchemy(app)
 
-class Article(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(255), unique=True, nullable=False)
+class Articles(db.Model):
+    url = db.Column(db.String(255), unique=True, nullable=False, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
 
 
@@ -35,7 +34,7 @@ def test():
 
 @app.route('/articles', methods=['GET'])
 def get_articles():
-    articles = Article.query.all()
+    articles = Articles.query.all()
     articles_list = [{'url': article.url, 'title': article.title} for article in articles]
     return jsonify({'articles': articles_list})
 

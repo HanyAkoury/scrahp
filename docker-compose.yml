@@ -21,10 +21,11 @@ services:
       - "5000:5000"
     depends_on:
       - database
+      - scrahp
     networks:
       - my_network
     volumes:
-      - ./db:/api/db
+      - ./db:/db
 
   database:
     build:
