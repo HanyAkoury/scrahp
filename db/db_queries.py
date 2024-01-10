@@ -1,11 +1,11 @@
 import sqlite3
 
 # Connect to the SQLite database
-conn = sqlite3.connect('scrahp.db')
+conn = sqlite3.connect("scrahp.db")
 c = conn.cursor()
 
 # Example 1: Select all columns from the articles table
-c.execute('SELECT * FROM articles')
+c.execute("SELECT * FROM articles")
 rows = c.fetchall()
 
 print("Example 1: Select all columns from the articles table")
@@ -13,7 +13,7 @@ for row in rows:
     print(row)
 
 # Example 2: Select specific columns from the articles table
-c.execute('SELECT title, url FROM articles')
+c.execute("SELECT title, url FROM articles")
 rows = c.fetchall()
 
 print("\nExample 2: Select specific columns from the articles table")
