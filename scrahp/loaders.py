@@ -1,9 +1,9 @@
-from scrapy.loader import ItemLoader
 from itemloaders.processors import MapCompose
+from scrapy.loader import ItemLoader
 from unidecode import unidecode
 
 
-def remove_accents(value):
+def remove_accents(value: str) -> str:
     return unidecode(value)
 
 

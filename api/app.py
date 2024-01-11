@@ -39,16 +39,10 @@ def get_articles():
     articles = Articles.query.all()
 
     if article_url:
-        specific_article = [
-            {"url": article.url, "title": article.title}
-            for article in articles
-            if article.url == article_url
-        ]
+        specific_article = [{"url": article.url, "title": article.title} for article in articles if article.url == article_url]
         return jsonify({"articles": specific_article})
     else:
-        articles_list = [
-            {"url": article.url, "title": article.title} for article in articles
-        ]
+        articles_list = [{"url": article.url, "title": article.title} for article in articles]
         return jsonify({"articles": articles_list})
 
 

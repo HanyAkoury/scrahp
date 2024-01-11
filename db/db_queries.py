@@ -20,7 +20,7 @@ print("\nExample 2: Select specific columns from the articles table")
 for row in rows:
     print(row)
 
-# Example 3: Select rows based on a condition (e.g., where title contains 'news')
+# Example 3: Select rows based on a condition
 c.execute("SELECT * FROM articles WHERE title LIKE '%news%'")
 rows = c.fetchall()
 

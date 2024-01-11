@@ -5,41 +5,43 @@
 
 import json
 import os
-import pdb
 import re
 import sqlite3
 import string
+from typing import List
 
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from scrapy.spiders import Spider
 from unidecode import unidecode
+
+from scrahp.items import Article, Url
 
 
 class UrlPipeline:
-    def process_item(self, item, spider):
+    def process_item(self, item: Url, spider: Spider) -> Url:
         return self.cleanup_item(item, spider)
 
-    def cleanup_item(self, item, spider):
+    def cleanup_item(self, item: Url, spider: Spider) -> Url:
         # cleanup title because its a list we need a string
         item["title"] = self.cleanup_title(item, spider)
         item["url"] = self.cleanup_url(item, spider)
+        item["base_url"] = item["base_url"][-1]
         return item
 
-    def cleanup_title(self, item, spider):
+    def cleanup_title(self, item: Url, spider: Spider) -> str:
         # cleanup title because its a list we need a string
         return item["title"][-1]
 
-    def cleanup_url(self, item, spider):
+    def cleanup_url(self, item: Url, spider: Spider) -> str:
         # cleanup url for the link to be clickable
-        # pdb.set_trace()
-        base_url = re.search(r"(https?://[^/]+)", spider.url[-1]).group(1)
+        # get base url (news, sport or other etc.)
         if self.is_valid_http_url(item["url"][-1]):
             cleaned_url = item["url"][-1]
         else:
-            cleaned_url = f"{base_url}{item['url'][-1]}"
+            cleaned_url = f"{item['base_url'][-1]}{item['url'][-1]}"
         return cleaned_url
 
-    def is_valid_http_url(self, url):
+    def is_valid_http_url(self, url: str) -> bool:
         # Define a regular expression pattern for a valid HTTP or HTTPS URL
         url_pattern = re.compile(
             r"^(https?://)?"  # http:// or https://
@@ -51,88 +53,79 @@ class UrlPipeline:
 
 
 class ArticlePipeline:
-    def process_item(self, item, spider):
-        # pdb.set_trace()
+    def process_item(self, item: Article, spider: Spider) -> Article:
         return self.cleanup_item(item, spider)
 
-    def cleanup_item(self, item, spider):
-        # pdb.set_trace()
+    def cleanup_item(self, item: Article, spider: Spider) -> Article:
         item["content"] = self.clean_article_content(item["content"])
         item["url"] = self.clean_url(item["url"])
+        item["title"] = item["title"][-1]
         return item
 
-    def clean_article_content(self, content):
+    def clean_article_content(self, content: List[str]) -> str:
         article_raw_content = [item.strip() for item in content]
-        article_content = [
-            item + "." if not item.endswith(tuple(string.punctuation)) else item
-            for item in article_raw_content
-        ]
+        article_content = [item + "." if not item.endswith(tuple(string.punctuation)) else item for item in article_raw_content]
         article_content_string = " ".join(article_content)
 
         return unidecode(article_content_string).replace("\\", "")
 
-    def clean_url(self, url):
-        # pdb.set_trace()
+    def clean_url(self, url: List[str]) -> str:
         cleaned_url = [url.strip() for url in url]
         article_content_string = "".join(cleaned_url)
         return article_content_string
 
 
-class JsonWriterPipeline:
-    def open_spider(self, spider):
+class JsonUrlWriterPipeline:
+    def open_spider(self, spider: Spider) -> None:
         if not os.path.exists("data"):
             os.makedirs("data")
 
         self.file = open("./data/urls.jsonl", "w")
 
-    def close_spider(self, spider):
+    def close_spider(self, spider: Spider) -> None:
         self.file.close()
 
-    def process_item(self, item, spider):
-        print("---")
+    def process_item(self, item: Article, spider: Spider) -> Url:
         line = json.dumps(ItemAdapter(item).asdict()) + "\n"
         self.file.write(line)
         return item
 
 
-class JsonWriterPipeline2:
-    def open_spider(self, spider):
+class JsonArticleWriterPipeline:
+    def open_spider(self, spider: Spider) -> None:
         if not os.path.exists("data"):
             os.makedirs("data")
 
         self.file = open("./data/articles.jsonl", "w")
 
-    def close_spider(self, spider):
+    def close_spider(self, spider: Spider) -> None:
         self.file.close()
 
-    def process_item(self, item, spider):
-        print("---")
+    def process_item(self, item: Url, spider: Spider) -> Url:
         line = json.dumps(ItemAdapter(item).asdict()) + "\n"
         self.file.write(line)
         return item
 
 
 class SQLitePipeline:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db_file = "db/scrahp.db"
 
-    def open_spider(self, spider):
+    def open_spider(self, spider: Spider) -> None:
         try:
             # Connect to the SQLite database
             self.conn = sqlite3.connect(self.db_file)
             self.c = self.conn.cursor()
         except sqlite3.OperationalError:
-            print(
-                f"Database file '{self.db_file}' does not exist. Skipping database operations."
-            )
+            print(f"Database file '{self.db_file}' does not exist. Skipping database operations.")
 
-    def close_spider(self, spider):
+    def close_spider(self, spider: Spider) -> None:
         if hasattr(self, "conn"):
             # Commit the changes and close the connection
             self.conn.commit()
             self.conn.close()
 
-    def process_item(self, item, spider):
+    def process_item(self, item: Url, spider: Spider) -> Url:
         if not hasattr(self, "conn"):
             return item
 

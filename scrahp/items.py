@@ -7,6 +7,7 @@ class Url(scrapy.Item):
     """
 
     title = scrapy.Field()
+    base_url = scrapy.Field()
     url = scrapy.Field()
 
 

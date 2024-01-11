@@ -1,8 +1,0 @@
-files: '^.*\.py$'
-repos:
--   repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-    - id: black
-      language_version: python3.9
-      # args: ["--config=./src/pyproject.toml"]
