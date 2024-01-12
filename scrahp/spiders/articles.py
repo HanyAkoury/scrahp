@@ -1,8 +1,8 @@
 import json
+import pdb
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import pdb
 import scrapy
 from scrapy.http import Response
 
@@ -41,7 +41,7 @@ class ArticlesSpider(scrapy.Spider):
         "a.author-unit__text ::text",
         "div.article__body-content ::text",
         "div.qa-story-body ::text",
-        "article.ssrcss-pv1rh6-ArticleWrapper ::text"
+        "article.ssrcss-pv1rh6-ArticleWrapper ::text",
     ]
 
     def start_requests(self) -> Any:

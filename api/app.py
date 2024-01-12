@@ -16,7 +16,7 @@ class Articles(db.Model):
 
 @app.route("/", methods=["GET"])
 def home():
-   return render_template('landing_page.html')
+    return render_template("landing_page.html")
 
 
 @app.route("/articles", methods=["GET"])
@@ -26,20 +26,28 @@ def get_articles():
 
     # Check if a specific article is asked for using an url
     if article_url:
-        specific_article = [{"url": article.url, "title": article.title, "author": article.author, "content": article.content} for article in articles if article.url == article_url]
+        specific_article = [
+            {"url": article.url, "title": article.title, "author": article.author, "content": article.content}
+            for article in articles
+            if article.url == article_url
+        ]
         return jsonify({"articles": specific_article})
     else:
         articles_list = [{"url": article.url, "title": article.title, "author": article.author, "content": article.content} for article in articles]
         return jsonify({"articles": articles_list})
 
+
 @app.route("/top_authors", methods=["GET"])
 def top_authors():
     # Exclude authors with the value "n/a"
-    top_authors = db.session.query(Articles.author, func.count(Articles.author).label('article_count')).\
-        filter(Articles.author != "n/a").\
-        group_by(Articles.author).\
-        order_by(func.count(Articles.author).desc()).\
-        limit(5).all()
+    top_authors = (
+        db.session.query(Articles.author, func.count(Articles.author).label("article_count"))
+        .filter(Articles.author != "n/a")
+        .group_by(Articles.author)
+        .order_by(func.count(Articles.author).desc())
+        .limit(5)
+        .all()
+    )
 
     result = [{"author": author, "article_count": article_count} for author, article_count in top_authors]
     return jsonify({"top_authors": result})

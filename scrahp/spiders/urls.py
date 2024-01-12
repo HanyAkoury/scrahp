@@ -1,9 +1,9 @@
 # import pdb
+import pdb
 import re
 from pathlib import Path
 from typing import Any, List
 
-import pdb
 import scrapy
 from scrapy.http import Response
 from scrapy.selector import SelectorList

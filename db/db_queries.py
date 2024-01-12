@@ -5,7 +5,7 @@ conn = sqlite3.connect("scrahp.db")
 c = conn.cursor()
 
 # Example 0: Print Database schema
-table_name = 'articles'
+table_name = "articles"
 c.execute(f"PRAGMA table_info({table_name})")
 columns = c.fetchall()
 print(f"Table Schema: {table_name}")

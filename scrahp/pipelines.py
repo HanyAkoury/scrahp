@@ -79,11 +79,9 @@ class ArticlePipeline:
         return article_content_string
 
     def clean_title(self, title: List[str]) -> str:
-
         return title[-1]
 
     def clean_author(self, author: List[str]) -> str:
-
         return author[-1]
 
 
@@ -138,21 +136,17 @@ class SQLitePipeline:
             self.conn.close()
 
     def process_item(self, item: Url, spider: Spider) -> Url:
-
         if not hasattr(self, "conn"):
             return item
         # Extract values from the item
         adapter = ItemAdapter(item)
 
-        title = adapter.get('title')
-        url = adapter.get('url')
-        author = adapter.get('author')
-        content = adapter.get('content')
+        title = adapter.get("title")
+        url = adapter.get("url")
+        author = adapter.get("author")
+        content = adapter.get("content")
 
         # Insert the article into the database, ignoring duplicates based on the URL
-        self.c.execute(
-            "INSERT OR IGNORE INTO articles (title, url, author, content) VALUES (?, ?, ?, ?)",
-            (title, url, author, content)
-        )
+        self.c.execute("INSERT OR IGNORE INTO articles (title, url, author, content) VALUES (?, ?, ?, ?)", (title, url, author, content))
 
         return item
