@@ -17,7 +17,9 @@ def initialize_database():
         """
         CREATE TABLE IF NOT EXISTS articles (
             url TEXT PRIMARY KEY,
-            title TEXT
+            title TEXT,
+            author TEXT,
+            content TEXT
         )
     """
     )

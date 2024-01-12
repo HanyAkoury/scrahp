@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import pdb
 import scrapy
 from scrapy.http import Response
 
@@ -21,6 +22,7 @@ class ArticlesSpider(scrapy.Spider):
         "ITEM_PIPELINES": {
             "scrahp.pipelines.ArticlePipeline": 300,
             "scrahp.pipelines.JsonArticleWriterPipeline": 400,
+            "scrahp.pipelines.SQLitePipeline": 500,
         }
     }
     url_location: str = "./data/urls.jsonl"
@@ -36,8 +38,10 @@ class ArticlesSpider(scrapy.Spider):
     content_queries: List[str] = [
         "div.ssrcss-11r1m41-RichTextComponentWrapper ::text,\
               h2.ssrcss-y2fd7s-StyledHeading ::text",
+        "a.author-unit__text ::text",
         "div.article__body-content ::text",
         "div.qa-story-body ::text",
+        "article.ssrcss-pv1rh6-ArticleWrapper ::text"
     ]
 
     def start_requests(self) -> Any:
@@ -81,17 +85,15 @@ class ArticlesSpider(scrapy.Spider):
         return [line["url"] for line in data]
 
     def is_usable_url(self, url: str) -> bool:
-        unwanted_urls = [
+        unwanted_elements: List[str] = [
+            "/av/",
+            "/live",
+            "/videos/",
             "https://www.bbc.com/news/world_radio_and_tv",
             "https://www.bbc.com/sounds/play/live:bbc_world_service",
         ]
-        if url in unwanted_urls:
-            return False
-        elif "/av/" in str(url):
-            return False
-        elif "/live" in str(url):
-            return False
-        elif "/videos/" in str(url):
+        # pdb.set_trace()
+        if any(element.lower() in url.lower() for element in unwanted_elements):
             return False
         else:
             return True

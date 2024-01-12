@@ -68,5 +68,5 @@
         "titleBar.activeBackground": "#09484B",
         "titleBar.activeForeground": "#F1FDFD"
     },
-    "workbench.colorTheme": "Dark+ Python"
+    "workbench.colorTheme": "Default Dark+"
 }

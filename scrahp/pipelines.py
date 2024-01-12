@@ -5,6 +5,7 @@
 
 import json
 import os
+import pdb
 import re
 import sqlite3
 import string
@@ -57,12 +58,14 @@ class ArticlePipeline:
         return self.cleanup_item(item, spider)
 
     def cleanup_item(self, item: Article, spider: Spider) -> Article:
-        item["content"] = self.clean_article_content(item["content"])
+        item["content"] = self.clean_content(item["content"])
         item["url"] = self.clean_url(item["url"])
-        item["title"] = item["title"][-1]
+        item["title"] = self.clean_title(item["title"])
+        item["author"] = self.clean_author(item["author"])
+        # pdb.set_trace()
         return item
 
-    def clean_article_content(self, content: List[str]) -> str:
+    def clean_content(self, content: List[str]) -> str:
         article_raw_content = [item.strip() for item in content]
         article_content = [item + "." if not item.endswith(tuple(string.punctuation)) else item for item in article_raw_content]
         article_content_string = " ".join(article_content)
@@ -72,7 +75,16 @@ class ArticlePipeline:
     def clean_url(self, url: List[str]) -> str:
         cleaned_url = [url.strip() for url in url]
         article_content_string = "".join(cleaned_url)
+
         return article_content_string
+
+    def clean_title(self, title: List[str]) -> str:
+
+        return title[-1]
+
+    def clean_author(self, author: List[str]) -> str:
+
+        return author[-1]
 
 
 class JsonUrlWriterPipeline:
@@ -126,16 +138,21 @@ class SQLitePipeline:
             self.conn.close()
 
     def process_item(self, item: Url, spider: Spider) -> Url:
+
         if not hasattr(self, "conn"):
             return item
+        # Extract values from the item
+        adapter = ItemAdapter(item)
+
+        title = adapter.get('title')
+        url = adapter.get('url')
+        author = adapter.get('author')
+        content = adapter.get('content')
 
         # Insert the article into the database, ignoring duplicates based on the URL
         self.c.execute(
-            """
-            INSERT OR IGNORE INTO articles (title, url)
-            VALUES (?, ?)
-        """,
-            (item["title"], item["url"]),
+            "INSERT OR IGNORE INTO articles (title, url, author, content) VALUES (?, ?, ?, ?)",
+            (title, url, author, content)
         )
 
         return item
