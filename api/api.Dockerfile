@@ -11,8 +11,6 @@ LABEL description="A Docker container to serve the Python Flask API related to t
 # Set the working directory to /api
 WORKDIR /api
 
-RUN ls
-
 # Copy only the files needed for installing dependencies
 COPY pyproject.toml poetry.lock poetry.toml /api/
 
@@ -22,6 +20,7 @@ RUN chmod +x serve.sh
 
 # Copy the current directory contents into the container at /api
 COPY ./api/app.py /api
+COPY ./api/templates/landing_page.html /api/templates/
 
 # Install poetry
 RUN pip install "poetry==1.7.1"
@@ -29,7 +28,6 @@ RUN pip install "poetry==1.7.1"
 # Install dependencies using poetry
 RUN poetry config virtualenvs.create true \
     && poetry install --no-dev --no-interaction --no-ansi
-
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Scrahp API</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            color: #333;
+        }
+        h3 {
+            color: #555;
+        }
+        p {
+            color: #777;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .owner-title {
+            color: #555;
+            margin-top: 10px;
+        }
+        .contact-info {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .contact-info i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the SCRAHP API</h1>
+    <p>Explore and interact with data from the scrapping project using a simple API built with Flask.</p>
+
+    <h3>Endpoints:</h3>
+    <ul>
+        <li><a href="http://localhost:5000/articles">/articles</a> - Get all articles or specify an article by URL</li>
+        <li><a href="http://localhost:5000/top_authors">/top_authors</a> - Get top 5 authors based on number of written articles</li>
+    </ul>
+
+    <p class="owner-title">Owner: Hany Akoury</p>
+
+    <div class="contact-info">
+        <i class="fa fa-envelope" style="font-size:24px"></i>
+        <a href="mailto:hany.akoury@gmail.com"> hany.akoury@gmail.com</a>
+    </div>
+
+    <div class="contact-info">
+        <i class="fa fa-github" style="font-size:24px"></i>
+        <a href="https://github.com/HanyAkoury"> HanyAkoury</a>
+    </div>
+</body>
+</html>

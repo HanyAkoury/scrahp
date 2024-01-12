@@ -1,10 +1,11 @@
-from scrapy.loader import ItemLoader
 from itemloaders.processors import MapCompose
+from scrapy.loader import ItemLoader
 from unidecode import unidecode
-import pdb
 
-def remove_accents(value):
+
+def remove_accents(value: str) -> str:
     return unidecode(value)
 
-class ArticleLoader(ItemLoader):
+
+class Loader(ItemLoader):
     default_input_processor = MapCompose(remove_accents)
