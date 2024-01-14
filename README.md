@@ -3,13 +3,16 @@
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Architecture](#architecture)
-- [Docker Usage](#docker-usage)
-- [Setting Up in Production](#setting-up-in-production)
-- [Limitations of the Current Solution](#limitations-of-the-current-solution)
-- [Potential Improvements](#potential-improvements)
-- [Distributed Data Processing](#distributed-data-processing)
+- [Scrahp Project](#scrahp-project)
+   - [Introduction](#introduction)
+   - [Architecture](#architecture)
+   - [Docker Usage](#docker-usage)
+- [Discussions](#discussions)
+   - [Setting Up in Production](#setting-up-in-production)
+   - [Limitations of the Current Solution](#limitations-of-the-current-solution)
+   - [Potential Improvements](#potential-improvements)
+   - [Distributed Data Processing](#distributed-data-processing)
+
 
 ## Introduction
 
@@ -18,6 +21,7 @@ The Scrahp project is a web scraping and API implementation built with Scrapy an
 ## Architecture
 
 The project consists of three main components that are containerized with **docker**:
+<img src="img/archi1.jpg" width="100%">
 
 1. **Scrahp (Scrapy Project):**
    - Handles web scraping and data extraction.
@@ -132,11 +136,17 @@ Alternatively, you can test the API endpoints directly in your web browser by en
 ## Setting Up in Production
 
 ### Production Architecture
-An example of an architecture in a production setting/environment.
-- **Orchestrator**: Airflow and docker operators for orchestration and code execution.
-- **Compute**: Clusters eventually.
-- **Datalake**: Any S3 like Datalake gen2 storage: Saving raw files used when crawled websites for storage and historisation.
-- **DataWarehouse**: Data warehouse in Snowflake with a schema that reflects analytics needs.
+<img src="img/archi2.jpg" width="100%">
+
+*A theoretical example of an architecture in a production setting/environment.*
+- **Airflow on Kubernetes**: Manages and orchestrates web scraping tasks and data processing workflows within a Kubernetes cluster.
+- **Datalake**: Any S3 like Datalake gen2 storage - saving raw files used when crawled websites for storage and historisation.
+- **Dockerized Components**: Includes Flask API and Scrapy spiders, each running in separate Docker container managed by Kubernetes.
+   - **Scrapy Spiders**: Perform web scraping, gathering data and storing it accordingly.
+   - **Flask API**: Provides endpoints for data access and querying, interacting with Snowflake for data articles retrieval.
+- **Snowflake Data Warehouse**: Central repository for storing processed data.
+   - Data Schema (*for analytics*): Stores processed web scraping data.
+   - Operational Schema (*for operations*): Manages application state and user data, functioning as the operational database within Snowflake.
 
 ### Production Deployment
 To deploy this project in a production environment we should consider multiple aspects:
