@@ -1,5 +1,5 @@
-# import pdb
-import pdb
+#
+
 import re
 from pathlib import Path
 from typing import Any, List
@@ -14,19 +14,20 @@ from scrahp.loaders import Loader
 
 class UrlsSpider(scrapy.Spider):
     """
-    Spider that can crawl the website and try to get the different articles from the website.
-    The idea is to crawl and store the articles as well as their urls inside a json, that will serve
-    as an url inputs to scrap for more information about the said articles.
+    Spider for crawling a website and extracting article URLs.
+
+    This spider crawls specified URLs and extracts article information, such as titles
+    and URLs, storing them for further processing. It is designed to gather URLs that
+    will serve as inputs for scraping more detailed information about the articles.
     """
 
     custom_settings = {
         "ITEM_PIPELINES": {
             "scrahp.pipelines.UrlPipeline": 300,
-            "scrahp.pipelines.JsonUrlWriterPipeline": 400,
-            "scrahp.pipelines.SQLitePipeline": 500,
+            "scrahp.pipelines.JsonWriterPipeline": 400,
         }
     }
-    name = "urls"
+    name: str = "urls"
     local_urls: List[str] = []
     urls: List[str] = [
         # 'https://www.bbc.com/',
@@ -41,10 +42,22 @@ class UrlsSpider(scrapy.Spider):
     ]
 
     def start_requests(self) -> Any:
+        """
+        Generates Scrapy Requests from the list of URLs to be crawled.
+        """
         for url in self.urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
+        """
+        Parse the response and extract article URLs and titles.
+
+        Args:
+            response (Response): The response object to parse.
+
+        Yields:
+            Item: The extracted URL item.
+        """
         self.save_page_offline(response=response)
         available_urls: SelectorList = response.css("a.gs-c-promo-heading")
 
@@ -56,6 +69,12 @@ class UrlsSpider(scrapy.Spider):
             yield url_loader.load_item()
 
     def save_page_offline(self, response: Response) -> None:
+        """
+        Save a copy of the crawled page for offline analysis and eventual backup.
+
+        Args:
+            response (Response): The response object to save.
+        """
         page = response.url.split("/")[-2]
         directory = "./pages/"
         filename = f"{directory}Articles2-{page}.html"
@@ -70,7 +89,15 @@ class UrlsSpider(scrapy.Spider):
         self.log(f"Saved file {filename}")
 
     def extract_base_url(self, response: Response) -> str:
-        # pdb.set_trace()
+        """
+        Extract the base URL from the response object because it's needed futher in the process.
+
+        Args:
+            response (Response): The response object to extract the base URL from.
+
+        Returns:
+            str: The extracted base URL, or 'n/a' if not found.
+        """
         base_url = re.search(r"(https?://[^/]+)", response.request.url)
         if base_url is not None:
             return base_url.group(1)

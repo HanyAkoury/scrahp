@@ -8,6 +8,16 @@ db = SQLAlchemy(app)
 
 
 class Articles(db.Model):
+    """
+    Represents an article record in the database.
+
+    Attributes:
+        url (str): Unique URL of the article, serving as the primary key.
+        title (str): Title of the article.
+        author (str): Author of the article.
+        content (str): Content of the article.
+    """
+
     url = db.Column(db.String(255), unique=True, nullable=False, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(255), nullable=False)
@@ -16,11 +26,23 @@ class Articles(db.Model):
 
 @app.route("/", methods=["GET"])
 def home():
+    """
+    Render the landing page of the website.
+
+    Returns:
+        Rendered template: The landing page.
+    """
     return render_template("landing_page.html")
 
 
 @app.route("/articles", methods=["GET"])
 def get_articles():
+    """
+    Retrieve articles from the database. Can choose to optionally filter by a specific URL.
+
+    Returns:
+        json: A list of articles or a specific article if a URL parameter is provided.
+    """
     article_url = request.args.get("url")
     articles = Articles.query.all()
 
@@ -39,6 +61,12 @@ def get_articles():
 
 @app.route("/top_authors", methods=["GET"])
 def top_authors():
+    """
+    Retrieve the top authors based on the number of articles written.
+
+    Returns:
+        json: A list of top authors and their article count, excluding 'n/a'.
+    """
     # Exclude authors with the value "n/a"
     top_authors = (
         db.session.query(Articles.author, func.count(Articles.author).label("article_count"))

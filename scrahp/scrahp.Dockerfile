@@ -21,4 +21,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 COPY ./scrahp /app/scrahp
 COPY ./scrapy.cfg /app/
 
-ENTRYPOINT ["./scrahp/crawl.sh"]
+RUN chmod +x /app/scrahp/start.sh
+ENTRYPOINT ["bash", "/app/scrahp/start.sh"]

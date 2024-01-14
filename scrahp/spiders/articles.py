@@ -1,5 +1,4 @@
 import json
-import pdb
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -12,16 +11,18 @@ from ..loaders import Loader
 
 class ArticlesSpider(scrapy.Spider):
     """
-    Spider that can crawl the website and try to get the different articles from the website.
-    The idea is to crawl and store the articles as well as their urls inside a json, that will serve
-    as an url inputs to scrap for more information about the said articles.
+    Spider for crawling specified URLs and extracting detailed article information.
+
+    This spider reads article URLs from a JSONL file and crawls each URL to extract
+    information such as the title, author, and content of the articles. Extracted data
+    is stored in various formats using configured pipelines.
     """
 
     name: str = "articles"
     custom_settings: Optional[Dict[str, Dict[str, int]]] = {
         "ITEM_PIPELINES": {
             "scrahp.pipelines.ArticlePipeline": 300,
-            "scrahp.pipelines.JsonArticleWriterPipeline": 400,
+            "scrahp.pipelines.JsonWriterPipeline": 400,
             "scrahp.pipelines.SQLitePipeline": 500,
         }
     }
@@ -45,13 +46,25 @@ class ArticlesSpider(scrapy.Spider):
     ]
 
     def start_requests(self) -> Any:
+        """
+        Generate initial requests from URLs loaded from a JSONL file.
+        """
         articles_urls: List[str] = self.load_jsonl_file(self.url_location)
 
         for url in articles_urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response: Response, **kwargs: Any) -> Any:
-        # self.save_page_offline(response=response)
+        """
+        Parse the response and extract article information using the defined Loader.
+
+        Args:
+            response (Response): The response object to parse.
+
+        Yields:
+            Item: The extracted article item.
+        """
+        self.save_page_offline(response=response)
 
         loader: Loader = Loader(item=Article(), selector=response)
 
@@ -77,6 +90,15 @@ class ArticlesSpider(scrapy.Spider):
         self.log(f"Saved file {filename}")
 
     def load_jsonl_file(self, file_path: str) -> List[str]:
+        """
+        Simple load of URLs from a JSONL file.
+
+        Args:
+            file_path (str): Path to the JSONL file.
+
+        Returns:
+            List[str]: A list of URLs.
+        """
         data: List[Dict[str, str]] = []
         with open(file_path, "r") as file:
             for line in file:
@@ -85,6 +107,15 @@ class ArticlesSpider(scrapy.Spider):
         return [line["url"] for line in data]
 
     def is_usable_url(self, url: str) -> bool:
+        """
+        Check if a URL is suitable for scraping.
+
+        Args:
+            url (str): The URL to check.
+
+        Returns:
+            bool: True if the URL is suitable, False otherwise.
+        """
         unwanted_elements: List[str] = [
             "/av/",
             "/live",
@@ -92,19 +123,34 @@ class ArticlesSpider(scrapy.Spider):
             "https://www.bbc.com/news/world_radio_and_tv",
             "https://www.bbc.com/sounds/play/live:bbc_world_service",
         ]
-        # pdb.set_trace()
         if any(element.lower() in url.lower() for element in unwanted_elements):
             return False
         else:
             return True
 
     def extractable_content(self, response: Response, css_queries: List[str]) -> Optional[str]:
+        """
+        Determine if content is extractable using provided CSS queries.
+        Args
+            response (Response): The response object to query
+            css_queries (List[str]): A list of CSS queries to test.
+        Returns
+            Optional[str]: The first successful CSS query, or None if none are successful.
+        """
         for query in css_queries:
             if len(response.css(query)) > 0:
                 return query
         return None
 
     def add_key(self, response: Response, loader: Loader, queries: List[str], key: str) -> None:
+        """
+        Add data to the loader based on the first successful CSS query
+        Args:
+            response (Response): The response object to query.
+            loader (Loader): The loader to add data to.
+            queries (List[str]): A list of CSS queries to try.
+            key (str): The key to add to the loader.
+        """
         potential_key = self.extractable_content(response, queries)
         if potential_key is not None:
             loader.add_css(key, potential_key)

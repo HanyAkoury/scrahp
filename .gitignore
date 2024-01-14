@@ -159,7 +159,7 @@ __MACOSX/
 # Personnal vscode settings
 .vscode/spelling/*
 .vscode/.ssh/*
-.vscode/settings.json
+.vscode/*
 # .devcontainer/devcontainer.env
 
 # SRC

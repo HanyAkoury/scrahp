@@ -7,25 +7,25 @@ services:
       context: .
       dockerfile: ./scrahp/scrahp.Dockerfile
     depends_on:
-      - database
+      - database # Indicates dependency on the database service (No DB - No Api)
     networks:
       - my_network
     volumes:
-    - ./db:/app/db
+    - ./db:/app/db # Maps the local db directory to the /app/db
 
   api:
     build:
       context: .
       dockerfile: ./api/api.Dockerfile
     ports:
-      - "5000:5000"
+      - "5000:5000" # Exposes port 5000 for the API service
     depends_on:
       - database
       - scrahp
     networks:
       - my_network
     volumes:
-      - ./db:/db
+      - ./db:/db # Volume mapping for the API service to check the database storage
 
   database:
     build:
@@ -34,7 +34,8 @@ services:
     networks:
       - my_network
     volumes:
-      - ./db:/db/
+      - ./db:/db/ # Volume mapping for the database storage
 
 networks:
   my_network:
+    driver: bridge

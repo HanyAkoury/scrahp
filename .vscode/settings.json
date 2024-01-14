@@ -2,30 +2,6 @@
     "debug.internalConsoleOptions": "neverOpen",
     "python.terminal.activateEnvironment": true,
     "python.defaultInterpreterPath": "/c/Aware/projets/Perso/scrapbot/scrahp/.venv/Scripts/python",
-    "mypy-type-checker.path": [
-        "/c/Aware/projets/Perso/scrapbot/scrahp/.venv/Scripts/mypy"
-    ],
-    "mypy-type-checker.args": [
-        "--config=./pyproject.toml"
-    ],
-    "pylint.path": [
-        "/c/Aware/projets/Perso/scrapbot/scrahp/.venv/Scripts/pylint"
-    ],
-    "pylint.args": [
-        "/c/Aware/projets/Perso/scrapbot/scrahp/.venv/Scripts/pylint"
-    ],
-    "flake8.path": [
-        "/c/Aware/projets/Perso/scrapbot/scrahp/.venv/Scripts/flake8"
-    ],
-    "flake8.args": [
-        "--config=./pyproject.toml"
-    ],
-    "black-formatter.path": [
-        "/c/Aware/projets/Perso/scrapbot/scrahp/.venv/Scripts/black"
-    ],
-    "black-formatter.args": [
-        "--config=./pyproject.toml"
-    ],
     "editor.formatOnSaveMode": "file",
     "editor.formatOnSave": true,
     "files.trimTrailingWhitespace": true,
@@ -38,31 +14,13 @@
         "**/.mypy_cache": true,
         "**/.pytest_cache": true
     },
-    "python.analysis.typeCheckingMode": "strict",
-    "python.analysis.importFormat": "absolute",
-    "python.analysis.diagnosticMode": "openFilesOnly",
-    "python.analysis.logLevel": "Trace",
-    "python.analysis.diagnosticSeverityOverrides": {
-        "reportUnusedVariable": "information"
-    },
     "python.languageServer": "Jedi",
-    "python.analysis.exclude": [
-        "**//c/Aware/projets/Perso/scrapbot/scrahp/.venv",
-        "**/.pytest_cache",
-        "**/.mypy_cache"
-    ],
     "python.testing.pytestArgs": [
         "./unit_tests/"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "files.autoSaveDelay": 300000,
-    "python.analysis.autoSearchPaths": false,
-    "python.analysis.include": [
-        "api",
-        "db",
-        "scrahp",
-    ],
     "workbench.colorCustomizations": {
         "activityBar.background": "#063336",
         "titleBar.activeBackground": "#09484B",

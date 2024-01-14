@@ -1,3 +1,5 @@
 #!/bin/bash
-exec poetry run scrapy crawl urls
+set -e
+
+poetry run scrapy crawl urls
 exec poetry run scrapy crawl articles
