@@ -22,4 +22,5 @@ class Loader(ItemLoader):
 
     The default processor removes accents from all fields, ensuring consistent data formatting.
     """
+
     default_input_processor = MapCompose(remove_accents)

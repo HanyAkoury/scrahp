@@ -17,6 +17,7 @@ class Articles(db.Model):
         author (str): Author of the article.
         content (str): Content of the article.
     """
+
     url = db.Column(db.String(255), unique=True, nullable=False, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(255), nullable=False)

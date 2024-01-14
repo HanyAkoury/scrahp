@@ -1,7 +1,7 @@
 import os
+import pdb
 import sqlite3
 
-import pdb
 
 def is_database_initialized() -> bool:
     """
@@ -47,6 +47,7 @@ def initialize_database() -> None:
     # Create a flag file to indicate that the initialization is complete
     with open("initialized.flag", "w") as flag_file:
         flag_file.write("Initialization complete")
+
 
 # Main
 if not is_database_initialized():

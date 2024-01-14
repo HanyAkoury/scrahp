@@ -1,12 +1,12 @@
 import json
 import os
-
 import re
 import sqlite3
 import string
 from typing import List, Union
 
 from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
 from scrapy.spiders import Spider
 from unidecode import unidecode
 
@@ -113,6 +113,7 @@ class ArticlePipeline:
     scraped by the spiders. Each item processed go through a series of methods
     to ensure data integrity and proper formatting before being passed on.
     """
+
     def process_item(self, item: Article, spider: Spider) -> Article:
         """
         Process an 'Article' item through the pipeline.
@@ -216,6 +217,7 @@ class ArticlePipeline:
         # TODO add better cleaning
         return author[-1]
 
+
 class JsonWriterPipeline:
     """
     A pipeline for writing 'Url' and 'Article' items into separate JSON files.
@@ -224,7 +226,7 @@ class JsonWriterPipeline:
     either 'data/urls.json' for Url items or 'data/articles.json' for Article items.
     """
 
-    def open_spider(self, spider: Spider):
+    def open_spider(self, spider: Spider) -> None:
         """
         Open the spider, initializing the file handlers for URLs and Articles.
 
@@ -234,13 +236,13 @@ class JsonWriterPipeline:
         if not os.path.exists("data"):
             os.makedirs("data")
 
-        mode = 'a' if os.path.exists('data/urls.jsonl') else 'w'
-        self.url_file = open('data/urls.jsonl', mode)
+        mode = "a" if os.path.exists("data/urls.jsonl") else "w"
+        self.url_file = open("data/urls.jsonl", mode)
 
-        mode = 'a' if os.path.exists('data/articles.jsonl') else 'w'
-        self.article_file = open('data/articles.jsonl', mode)
+        mode = "a" if os.path.exists("data/articles.jsonl") else "w"
+        self.article_file = open("data/articles.jsonl", mode)
 
-    def close_spider(self, spider: Spider):
+    def close_spider(self, spider: Spider) -> None:
         """
         Close the spider, closing the file handlers for URLs and Articles.
 
@@ -250,7 +252,7 @@ class JsonWriterPipeline:
         self.url_file.close()
         self.article_file.close()
 
-    def process_item(self, item: Union[Article, Url], spider: Spider):
+    def process_item(self, item: Union[Article, Url], spider: Spider) -> Union[Article, Url]:
         """
         Process the item and write it to the appropriate JSON file.
 
@@ -271,6 +273,7 @@ class JsonWriterPipeline:
             return item
         else:
             raise DropItem(f"Unhandled item type: {type(item)}")
+
 
 class SQLitePipeline:
     def __init__(self) -> None:
