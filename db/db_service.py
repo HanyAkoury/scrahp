@@ -1,17 +1,33 @@
 import os
 import sqlite3
 
+import pdb
 
-def is_database_initialized():
+def is_database_initialized() -> bool:
+    """
+    Check if the database has already been initialized.
+
+    This function chcks if a flag file that indicates that the
+    database initialization has been completed exists.
+
+    Returns:
+        bool: True if the database is initialized, False otherwise.
+    """
     return os.path.exists("initialized.flag")
 
 
-def initialize_database():
+def initialize_database() -> None:
+    """
+    Initialize the SQLite database.
+
+    This function creates the necessary SQLite database and tables
+    if they don't already exist. It also creates a flag file upon
+    successful initialization to prevent re-initialization.
+    """
     # Connect to the SQLite database
     conn = sqlite3.connect("scrahp.db")
     c = conn.cursor()
 
-    # Create tables and perform other initialization steps
     # Create a table for articles
     c.execute(
         """
@@ -32,7 +48,7 @@ def initialize_database():
     with open("initialized.flag", "w") as flag_file:
         flag_file.write("Initialization complete")
 
-
+# Main
 if not is_database_initialized():
     initialize_database()
     print("Database initialization complete.")
