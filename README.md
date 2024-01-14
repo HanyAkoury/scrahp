@@ -126,7 +126,7 @@ When the docker-compose is up and running (or the API is manually running), you 
 
 #### Using a ````Web Browser````
 
-Alternatively, you can test the API endpoints directly in your web browser by entering this on your browser: http://localhost:5000/articles
+Alternatively, you can test the API endpoints directly in your web browser by entering this on your browser: http://localhost:5000/
 
 # Discussions
 ## Setting Up in Production
