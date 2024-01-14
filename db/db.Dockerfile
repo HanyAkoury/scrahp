@@ -10,4 +10,4 @@ WORKDIR /db
 COPY ./db/db_service.py /db/
 
 # Run the initialization script using Python
-RUN python db_service.py
+CMD ["python", "db_service.py"]
